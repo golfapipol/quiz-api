@@ -2,6 +2,9 @@ package api_test
 
 import (
 	. "api"
+	"encoding/json"
+	"io/ioutil"
+	. "model"
 	"net/http/httptest"
 	"testing"
 )
@@ -11,8 +14,12 @@ func Test_GetAllQuizHandler_Should_Be_20_Quiz(t *testing.T) {
 	responseRecorder := httptest.NewRecorder()
 	expectedQuizzes := 20
 	GetAllQuizHandler(responseRecorder, request)
+	response := responseRecorder.Result()
+	body, _ := ioutil.ReadAll(response.Body)
+	var quizzes []Quiz
+	json.Unmarshal(body, &quizzes)
 
-	if expectedQuizzes != len(actual) {
-		t.Errorf("Expected %d quiz but it got %d", expectedQuizzes, len(actual))
+	if expectedQuizzes != len(quizzes) {
+		t.Errorf("Expected %d quiz but it got %d", expectedQuizzes, len(quizzes))
 	}
 }
