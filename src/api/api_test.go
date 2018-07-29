@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	. "api"
 	"net/http/httptest"
 	"testing"
 )
