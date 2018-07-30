@@ -6,7 +6,11 @@ import (
 	"service"
 )
 
-func GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
-	quizzes := service.GetQuizzes()
+type Api struct {
+	Service service.QuizService
+}
+
+func (api Api) GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
+	quizzes := api.Service.GetQuizzes()
 	json.NewEncoder(w).Encode(quizzes)
 }
