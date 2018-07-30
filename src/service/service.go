@@ -22,7 +22,7 @@ func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
 }
 
 func (qs QuizService) GetQuizzes() ([]model.Quiz, error) {
-	var quizzes []model.Quiz
+	quizzes := make([]model.Quiz, 0)
 	err := qs.Session.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
 
 	if err != nil {
