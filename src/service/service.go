@@ -14,7 +14,7 @@ type MockQuizService struct {
 }
 
 type QuizService struct {
-	db *mgo.Session
+	Session *mgo.Session
 }
 
 func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
@@ -23,7 +23,7 @@ func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
 
 func (qs QuizService) GetQuizzes() ([]model.Quiz, error) {
 	var quizzes []model.Quiz
-	err := qs.db.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
+	err := qs.Session.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
 
 	if err != nil {
 		return []model.Quiz{}, err
