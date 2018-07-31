@@ -3,7 +3,7 @@ package model
 import "gopkg.in/mgo.v2/bson"
 
 type Quiz struct {
-	ID          bson.ObjectId `bson:"_id,omitempty"`
-	Title       string        `bson:"title"`
-	Description string        `bson:"description"`
+	ID          bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Title       string        `json:"title" bson:"title"`
+	Description string        `json:"description" bson:"description"`
 }
