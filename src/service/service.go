@@ -33,15 +33,11 @@ func (mqs MockQuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
 func (qs QuizService) GetQuizzes() ([]model.Quiz, error) {
 	quizzes := make([]model.Quiz, 0)
 	err := qs.Session.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
-
-	if err != nil {
-		return []model.Quiz{}, err
-	}
-	return quizzes, nil
+	return quizzes, err
 }
 
 func (qs QuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
-	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
-	quiz.ID = bson.NewObjectIdWithTime(fixedTime)
-	return quiz, nil
+	quiz.ID = bson.NewObjectId()
+	err := qs.Session.DB("quiz_api").C("quizzes").Insert(&quiz)
+	return quiz, err
 }
