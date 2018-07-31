@@ -1,0 +1,88 @@
+{
+	"info": {
+		"_postman_id": "f00332d3-64b4-4e79-803e-42800c93edd3",
+		"name": "quizzes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"_postman_id": "c52e7da9-9e0b-4ea6-82b2-5d23faac325d",
+			"name": "get all quizzes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6163ef33-df38-441f-9220-e90eec8113b7",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response should be array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(Array.isArray(jsonData)).to.eql(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"_postman_id": "de1592d4-fbdf-4ca0-b66b-c638536840b4",
+			"name": "post new quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "69722294-0dfa-4acf-8028-bbc0d4ad7f8c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should be response new quiz\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.title).to.eql(\"DISC\");",
+							"    pm.expect(jsonData.description).to.eql(\"Which one is your?\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"DISC\",\n\t\"description\": \"Which one is your?\"\n}"
+				},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
