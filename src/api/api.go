@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"model"
 	"net/http"
 	"service"
 )
@@ -16,4 +17,11 @@ func (api Api) GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	json.NewEncoder(w).Encode(quizzes)
+}
+
+func (api Api) CreateQuizHandler(w http.ResponseWriter, r *http.Request) {
+	var quiz model.Quiz
+	json.NewDecoder(r.Body).Decode(&quiz)
+	newQuiz, _ := api.Service.CreateQuiz(quiz)
+	json.NewEncoder(w).Encode(newQuiz)
 }

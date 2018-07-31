@@ -22,6 +22,6 @@ func main() {
 	api := apiLibrary.Api{Service: quizService}
 
 	http.HandleFunc("/v1/quizzes", api.GetAllQuizHandler)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":3000", nil)
 	fmt.Println("Quiz Api is Listening")
 }
