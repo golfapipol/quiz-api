@@ -27,6 +27,7 @@ func (api Api) GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(quizzes)
 }
 
@@ -34,5 +35,6 @@ func (api Api) CreateQuizHandler(w http.ResponseWriter, r *http.Request) {
 	var quiz model.Quiz
 	json.NewDecoder(r.Body).Decode(&quiz)
 	newQuiz, _ := api.Service.CreateQuiz(quiz)
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newQuiz)
 }
