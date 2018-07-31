@@ -11,6 +11,17 @@ type Api struct {
 	Service service.IQuizService
 }
 
+func (api Api) QuizHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		api.GetAllQuizHandler(w, r)
+	case http.MethodPost:
+		api.CreateQuizHandler(w, r)
+	default:
+		http.Error(w, "Not supported", http.StatusMethodNotAllowed)
+	}
+}
+
 func (api Api) GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, err := api.Service.GetQuizzes()
 	if err != nil {

@@ -21,7 +21,7 @@ func Test_GetAllQuizHandler_Should_Be_20_Quiz(t *testing.T) {
 	api := Api{
 		Service: &service.MockQuizService{},
 	}
-	api.GetAllQuizHandler(responseRecorder, request)
+	api.QuizHandler(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var quizzes []Quiz
@@ -47,7 +47,7 @@ func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_N
 	api := Api{
 		Service: &service.MockQuizService{},
 	}
-	api.CreateQuizHandler(responseRecorder, request)
+	api.QuizHandler(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var quiz Quiz
