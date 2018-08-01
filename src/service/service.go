@@ -1,8 +1,8 @@
 package service
 
 import (
+	"errors"
 	"model"
-	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	bson "gopkg.in/mgo.v2/bson"
@@ -11,23 +11,11 @@ import (
 type IQuizService interface {
 	GetQuizzes() ([]model.Quiz, error)
 	CreateQuiz(quiz model.Quiz) (model.Quiz, error)
-}
-
-type MockQuizService struct {
+	UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error)
 }
 
 type QuizService struct {
 	Session *mgo.Session
-}
-
-func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
-	return make([]model.Quiz, 20), nil
-}
-
-func (mqs MockQuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
-	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
-	quiz.ID = bson.NewObjectIdWithTime(fixedTime)
-	return quiz, nil
 }
 
 func (qs QuizService) GetQuizzes() ([]model.Quiz, error) {
@@ -40,4 +28,28 @@ func (qs QuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
 	quiz.ID = bson.NewObjectId()
 	err := qs.Session.DB("quiz_api").C("quizzes").Insert(&quiz)
 	return quiz, err
+}
+
+func (qs QuizService) UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error) {
+	var existedQuiz model.Quiz
+	err := qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	if err != nil {
+		return quiz, err
+	}
+	if existedQuiz.ID.Hex() != id {
+		return quiz, errors.New("Not found")
+	}
+	change := bson.M{}
+	if quiz.Title != "" {
+		change["title"] = quiz.Title
+	}
+	if quiz.Description != "" {
+		change["description"] = quiz.Description
+	}
+	err = qs.Session.DB("quiz_api").C("quizzes").UpdateId(id, change)
+	if err != nil {
+		return quiz, err
+	}
+	err = qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	return existedQuiz, err
 }

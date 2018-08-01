@@ -21,7 +21,8 @@ func main() {
 	quizService := service.QuizService{Session: DBConnection}
 	api := apiLibrary.Api{Service: quizService}
 
-	http.HandleFunc("/v1/quizzes", api.QuizHandler)
+	http.HandleFunc("/v1/quizzes", api.CreateQuizHandler)
+	http.HandleFunc("/v1/quizzes/", api.QuizHandler)
 	http.ListenAndServe(":3000", nil)
 	fmt.Println("Quiz Api is Listening")
 }

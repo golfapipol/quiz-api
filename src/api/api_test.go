@@ -47,7 +47,7 @@ func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_N
 	api := Api{
 		Service: &service.MockQuizService{},
 	}
-	api.QuizHandler(responseRecorder, request)
+	api.CreateQuizHandler(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var quiz Quiz
@@ -55,5 +55,35 @@ func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_N
 
 	if expectedQuiz != quiz {
 		t.Errorf("Expected %v quiz but it got %v", expectedQuiz, quiz)
+	}
+}
+
+func Test_UpdateQuizHandler_New_Description_DISC_is_type_of_people_Should_Be_Updated_Quiz(t *testing.T) {
+	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
+	oldQuiz := Quiz{
+		ID:          bson.NewObjectIdWithTime(fixedTime),
+		Title:       "DISC",
+		Description: "Which one is your?",
+	}
+	quizJSON, _ := json.Marshal(oldQuiz)
+	expectedQuiz := Quiz{
+		ID:          bson.NewObjectIdWithTime(fixedTime),
+		Title:       "DISC",
+		Description: "DISC is type of people",
+	}
+	request := httptest.NewRequest("PUT", "/v1/quizzes/"+oldQuiz.ID.Hex(), strings.NewReader(string(quizJSON)))
+	responseRecorder := httptest.NewRecorder()
+
+	api := Api{
+		Service: &service.MockQuizService{},
+	}
+	api.UpdateQuizHandler(responseRecorder, request)
+	response := responseRecorder.Result()
+	body, _ := ioutil.ReadAll(response.Body)
+	var updatedQuiz Quiz
+	json.Unmarshal(body, &updatedQuiz)
+
+	if expectedQuiz != updatedQuiz {
+		t.Errorf("Expected %v quiz but it got %v", expectedQuiz, updatedQuiz)
 	}
 }
