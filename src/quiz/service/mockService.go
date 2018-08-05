@@ -15,6 +15,10 @@ func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
 	return make([]model.Quiz, 20), nil
 }
 
+func (mqs MockQuizService) GetQuizByID(id string) (model.Quiz, error) {
+	return mqs.ExistedQuiz, nil
+}
+
 func (mqs MockQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error) {
 	var newQuiz = model.Quiz{}
 	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")

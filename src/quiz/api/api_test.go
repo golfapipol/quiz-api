@@ -100,3 +100,32 @@ func Test_UpdateQuizHandler_New_Description_DISC_is_type_of_people_Should_Be_Upd
 		t.Errorf("Expected %v quiz but it got %v", expectedQuiz, updatedQuiz)
 	}
 }
+
+func Test_GetQuizByIDHandler_Existed_ID_Should_Be_Quiz(t *testing.T) {
+	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
+	id := bson.NewObjectIdWithTime(fixedTime)
+	expectedQuiz := Quiz{
+		ID:          id,
+		Title:       "DISC",
+		Description: "DISC is type of people",
+	}
+	request := httptest.NewRequest("GET", "/v1/quizzes/"+id.Hex(), nil)
+	request.Header.Set("Content-Type", binding.MIMEJSON)
+	responseRecorder := httptest.NewRecorder()
+
+	api := ApiWithGin{
+		Service: &service.MockQuizService{
+			ExistedQuiz: expectedQuiz,
+		},
+	}
+	route := router.SetupRoute(&api)
+	route.ServeHTTP(responseRecorder, request)
+	response := responseRecorder.Result()
+	body, _ := ioutil.ReadAll(response.Body)
+	var updatedQuiz Quiz
+	json.Unmarshal(body, &updatedQuiz)
+
+	if expectedQuiz != updatedQuiz {
+		t.Errorf("Expected %v quiz but it got %v", expectedQuiz, updatedQuiz)
+	}
+}

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"quiz/model"
 	"quiz/service"
@@ -12,6 +11,7 @@ import (
 type Api interface {
 	GetAllQuizHandler(context *gin.Context)
 	CreateQuizHandler(context *gin.Context)
+	GetQuizByIdHandler(context *gin.Context)
 	UpdateQuizHandler(context *gin.Context)
 }
 
@@ -40,13 +40,24 @@ func (api *ApiWithGin) CreateQuizHandler(context *gin.Context) {
 func (api *ApiWithGin) UpdateQuizHandler(context *gin.Context) {
 	var quiz model.QuizRequest
 	id := context.Param("id")
-	fmt.Println("id", id)
 	if err := context.Bind(&quiz); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("quiz", quiz)
-	newQuiz, _ := api.Service.UpdateQuiz(id, quiz)
-	fmt.Println("quiz", newQuiz)
+	newQuiz, err := api.Service.UpdateQuiz(id, quiz)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, newQuiz)
+}
+
+func (api ApiWithGin) GetQuizByIdHandler(context *gin.Context) {
+	id := context.Param("id")
+	newQuiz, err := api.Service.GetQuizByID(id)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	context.JSON(http.StatusOK, newQuiz)
 }

@@ -10,6 +10,7 @@ import (
 
 type QuizService interface {
 	GetQuizzes() ([]model.Quiz, error)
+	GetQuizByID(string) (model.Quiz, error)
 	CreateQuiz(quiz model.QuizRequest) (model.Quiz, error)
 	UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error)
 }
@@ -22,6 +23,12 @@ func (qs MongoQuizService) GetQuizzes() ([]model.Quiz, error) {
 	quizzes := make([]model.Quiz, 0)
 	err := qs.Session.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
 	return quizzes, err
+}
+
+func (qs MongoQuizService) GetQuizByID(id string) (model.Quiz, error) {
+	var existedQuiz model.Quiz
+	err := qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	return existedQuiz, err
 }
 
 func (qs MongoQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error) {
