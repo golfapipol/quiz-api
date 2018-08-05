@@ -1,16 +1,18 @@
 package api_test
 
 import (
-	. "api"
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	. "model"
 	"net/http/httptest"
-	"service"
-	"strings"
+	. "quiz/api"
+	. "quiz/model"
+	"quiz/router"
+	"quiz/service"
 	"testing"
 	"time"
 
+	"github.com/gin-gonic/gin/binding"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -18,10 +20,11 @@ func Test_GetAllQuizHandler_Should_Be_20_Quiz(t *testing.T) {
 	request := httptest.NewRequest("GET", "/v1/quizzes", nil)
 	responseRecorder := httptest.NewRecorder()
 	expectedQuizzes := 20
-	api := Api{
+	api := ApiWithGin{
 		Service: &service.MockQuizService{},
 	}
-	api.QuizHandler(responseRecorder, request)
+	route := router.SetupRoute(&api)
+	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var quizzes []Quiz
@@ -33,7 +36,7 @@ func Test_GetAllQuizHandler_Should_Be_20_Quiz(t *testing.T) {
 }
 
 func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_New_Quiz(t *testing.T) {
-	quizRequest := Quiz{Title: "DISC", Description: "Which one is your?"}
+	quizRequest := QuizRequest{Title: "DISC", Description: "Which one is your?"}
 	quizJSON, _ := json.Marshal(quizRequest)
 	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
 	expectedQuiz := Quiz{
@@ -41,13 +44,15 @@ func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_N
 		Title:       "DISC",
 		Description: "Which one is your?",
 	}
-	request := httptest.NewRequest("POST", "/v1/quizzes", strings.NewReader(string(quizJSON)))
+	request := httptest.NewRequest("POST", "/v1/quizzes", bytes.NewBuffer(quizJSON))
+	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := Api{
+	api := ApiWithGin{
 		Service: &service.MockQuizService{},
 	}
-	api.CreateQuizHandler(responseRecorder, request)
+	route := router.SetupRoute(&api)
+	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var quiz Quiz
@@ -65,19 +70,27 @@ func Test_UpdateQuizHandler_New_Description_DISC_is_type_of_people_Should_Be_Upd
 		Title:       "DISC",
 		Description: "Which one is your?",
 	}
-	quizJSON, _ := json.Marshal(oldQuiz)
+	updateQuizRequest := QuizRequest{
+		Title:       "DISC",
+		Description: "DISC is type of people",
+	}
+	quizJSON, _ := json.Marshal(updateQuizRequest)
 	expectedQuiz := Quiz{
 		ID:          bson.NewObjectIdWithTime(fixedTime),
 		Title:       "DISC",
 		Description: "DISC is type of people",
 	}
-	request := httptest.NewRequest("PUT", "/v1/quizzes/"+oldQuiz.ID.Hex(), strings.NewReader(string(quizJSON)))
+	request := httptest.NewRequest("PUT", "/v1/quizzes/"+oldQuiz.ID.Hex(), bytes.NewBuffer(quizJSON))
+	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := Api{
-		Service: &service.MockQuizService{},
+	api := ApiWithGin{
+		Service: &service.MockQuizService{
+			ExistedQuiz: oldQuiz,
+		},
 	}
-	api.UpdateQuizHandler(responseRecorder, request)
+	route := router.SetupRoute(&api)
+	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	var updatedQuiz Quiz

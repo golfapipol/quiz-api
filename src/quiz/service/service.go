@@ -2,42 +2,43 @@ package service
 
 import (
 	"errors"
-	"model"
+	"quiz/model"
 
 	mgo "gopkg.in/mgo.v2"
 	bson "gopkg.in/mgo.v2/bson"
 )
 
-type IQuizService interface {
+type QuizService interface {
 	GetQuizzes() ([]model.Quiz, error)
-	CreateQuiz(quiz model.Quiz) (model.Quiz, error)
-	UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error)
+	CreateQuiz(quiz model.QuizRequest) (model.Quiz, error)
+	UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error)
 }
 
-type QuizService struct {
+type MongoQuizService struct {
 	Session *mgo.Session
 }
 
-func (qs QuizService) GetQuizzes() ([]model.Quiz, error) {
+func (qs MongoQuizService) GetQuizzes() ([]model.Quiz, error) {
 	quizzes := make([]model.Quiz, 0)
 	err := qs.Session.DB("quiz_api").C("quizzes").Find(nil).Limit(20).All(&quizzes)
 	return quizzes, err
 }
 
-func (qs QuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
-	quiz.ID = bson.NewObjectId()
-	err := qs.Session.DB("quiz_api").C("quizzes").Insert(&quiz)
-	return quiz, err
+func (qs MongoQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error) {
+	var newQuiz = model.Quiz{}
+	newQuiz.ID = bson.NewObjectId()
+	err := qs.Session.DB("quiz_api").C("quizzes").Insert(&newQuiz)
+	return newQuiz, err
 }
 
-func (qs QuizService) UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error) {
+func (qs MongoQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error) {
 	var existedQuiz model.Quiz
 	err := qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
 	if err != nil {
-		return quiz, err
+		return existedQuiz, err
 	}
 	if existedQuiz.ID.Hex() != id {
-		return quiz, errors.New("Not found")
+		return existedQuiz, errors.New("Not found")
 	}
 	change := bson.M{}
 	if quiz.Title != "" {
@@ -48,7 +49,7 @@ func (qs QuizService) UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error)
 	}
 	err = qs.Session.DB("quiz_api").C("quizzes").UpdateId(id, change)
 	if err != nil {
-		return quiz, err
+		return existedQuiz, err
 	}
 	err = qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
 	return existedQuiz, err

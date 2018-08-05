@@ -1,49 +1,52 @@
 package api
 
 import (
-	"encoding/json"
-	"model"
+	"fmt"
 	"net/http"
-	"service"
+	"quiz/model"
+	"quiz/service"
+
+	"github.com/gin-gonic/gin"
 )
 
-type Api struct {
-	Service service.IQuizService
+type Api interface {
+	GetAllQuizHandler(context *gin.Context)
+	CreateQuizHandler(context *gin.Context)
+	UpdateQuizHandler(context *gin.Context)
 }
 
-func (api Api) QuizHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		api.GetAllQuizHandler(w, r)
-	case http.MethodPut:
-		api.UpdateQuizHandler(w, r)
-	default:
-		http.Error(w, "Not supported", http.StatusMethodNotAllowed)
-	}
+type ApiWithGin struct {
+	Service service.QuizService
 }
 
-func (api Api) GetAllQuizHandler(w http.ResponseWriter, r *http.Request) {
+func (api ApiWithGin) GetAllQuizHandler(context *gin.Context) {
 	quizzes, err := api.Service.GetQuizzes()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quizzes)
+	context.JSON(http.StatusOK, quizzes)
 }
 
-func (api Api) CreateQuizHandler(w http.ResponseWriter, r *http.Request) {
-	var quiz model.Quiz
-	json.NewDecoder(r.Body).Decode(&quiz)
+func (api *ApiWithGin) CreateQuizHandler(context *gin.Context) {
+	var quiz model.QuizRequest
+	if err := context.Bind(&quiz); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	newQuiz, _ := api.Service.CreateQuiz(quiz)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newQuiz)
+	context.JSON(http.StatusOK, newQuiz)
 }
 
-func (api Api) UpdateQuizHandler(w http.ResponseWriter, r *http.Request) {
-	var quiz model.Quiz
-	var id string
-	json.NewDecoder(r.Body).Decode(&quiz)
+func (api *ApiWithGin) UpdateQuizHandler(context *gin.Context) {
+	var quiz model.QuizRequest
+	id := context.Param("id")
+	fmt.Println("id", id)
+	if err := context.Bind(&quiz); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("quiz", quiz)
 	newQuiz, _ := api.Service.UpdateQuiz(id, quiz)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newQuiz)
+	fmt.Println("quiz", newQuiz)
+	context.JSON(http.StatusOK, newQuiz)
 }

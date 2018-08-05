@@ -1,10 +1,10 @@
 package main
 
 import (
-	apiLibrary "api"
 	"fmt"
-	"net/http"
-	"service"
+	apiLibrary "quiz/api"
+	"quiz/router"
+	"quiz/service"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -18,11 +18,10 @@ func main() {
 		fmt.Println("Cannot connect database ", err.Error())
 		return
 	}
-	quizService := service.QuizService{Session: DBConnection}
-	api := apiLibrary.Api{Service: quizService}
+	quizService := service.MongoQuizService{Session: DBConnection}
+	api := apiLibrary.ApiWithGin{Service: quizService}
 
-	http.HandleFunc("/v1/quizzes", api.CreateQuizHandler)
-	http.HandleFunc("/v1/quizzes/", api.QuizHandler)
-	http.ListenAndServe(":3000", nil)
+	server := router.SetupRoute(&api)
+	server.Run(":3000")
 	fmt.Println("Quiz Api is Listening")
 }

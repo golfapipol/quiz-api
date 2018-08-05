@@ -1,32 +1,35 @@
 package service
 
 import (
-	"model"
+	"quiz/model"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
 )
 
 type MockQuizService struct {
-	existedQuiz model.Quiz
+	ExistedQuiz model.Quiz
 }
 
 func (mqs MockQuizService) GetQuizzes() ([]model.Quiz, error) {
 	return make([]model.Quiz, 20), nil
 }
 
-func (mqs MockQuizService) CreateQuiz(quiz model.Quiz) (model.Quiz, error) {
+func (mqs MockQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error) {
+	var newQuiz = model.Quiz{}
 	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
-	quiz.ID = bson.NewObjectIdWithTime(fixedTime)
-	return quiz, nil
+	newQuiz.ID = bson.NewObjectIdWithTime(fixedTime)
+	newQuiz.Title = quiz.Title
+	newQuiz.Description = quiz.Description
+	return newQuiz, nil
 }
 
-func (mqs *MockQuizService) UpdateQuiz(id string, quiz model.Quiz) (model.Quiz, error) {
+func (mqs *MockQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error) {
 	if quiz.Title != "" {
-		mqs.existedQuiz.Title = quiz.Title
+		mqs.ExistedQuiz.Title = quiz.Title
 	}
 	if quiz.Description != "" {
-		mqs.existedQuiz.Description = quiz.Description
+		mqs.ExistedQuiz.Description = quiz.Description
 	}
-	return mqs.existedQuiz, nil
+	return mqs.ExistedQuiz, nil
 }
