@@ -6,7 +6,6 @@
 	},
 	"item": [
 		{
-			"_postman_id": "c52e7da9-9e0b-4ea6-82b2-5d23faac325d",
 			"name": "get all quizzes",
 			"event": [
 				{
@@ -41,20 +40,22 @@
 			"response": []
 		},
 		{
-			"_postman_id": "de1592d4-fbdf-4ca0-b66b-c638536840b4",
-			"name": "post new quiz",
+			"name": "create new quiz \"disc\"",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "69722294-0dfa-4acf-8028-bbc0d4ad7f8c",
+						"id": "4f961944-48d8-4c9b-b999-c415e028a857",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"should be response new quiz\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.title).to.eql(\"DISC\");",
 							"    pm.expect(jsonData.description).to.eql(\"Which one is your?\");",
-							"});"
+							"    pm.environment.set(\"quiz_id\", jsonData.id);",
+							"});",
+							"",
+							""
 						]
 					}
 				}
@@ -79,6 +80,127 @@
 					"path": [
 						"v1",
 						"quizzes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f727d39-315b-4d2e-a835-c7ffa881c8b2",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"pm.test(\"quiz should be \", function () {",
+							"    var quiz = pm.response.json();",
+							"    pm.expect(quiz.title).to.eql(\"DISC\");",
+							"    pm.expect(quiz.description).to.eql(\"Which one is your?\");",
+							"    ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes",
+						"{{quiz_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete existed quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8bcc6a1-bea4-4022-afd0-cc681387f8e4",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"pm.test(\"quiz should be \", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.status).to.eql(\"ok\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes",
+						"{{quiz_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "119894f2-77ae-49c9-a902-821ef6b7f854",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"should be response new quiz\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.title).to.eql(\"DISC\");",
+							"    pm.expect(jsonData.description).to.eql(\"Which one is your DISC?\");",
+							"    pm.environment.set(\"quiz_id\", jsonData.id);",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"DISC\",\n\t\"description\": \"Which one is your DISC?\"\n}"
+				},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes",
+						"{{quiz_id}}"
 					]
 				}
 			},

@@ -27,7 +27,7 @@ func (qs MongoQuizService) GetQuizzes() ([]model.Quiz, error) {
 
 func (qs MongoQuizService) GetQuizByID(id string) (model.Quiz, error) {
 	var existedQuiz model.Quiz
-	err := qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	err := qs.Session.DB("quiz_api").C("quizzes").FindId(bson.ObjectIdHex(id)).One(&existedQuiz)
 	return existedQuiz, err
 }
 
@@ -42,7 +42,7 @@ func (qs MongoQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error
 
 func (qs MongoQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error) {
 	var existedQuiz model.Quiz
-	err := qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	err := qs.Session.DB("quiz_api").C("quizzes").FindId(bson.ObjectIdHex(id)).One(&existedQuiz)
 	if err != nil {
 		return existedQuiz, err
 	}
@@ -56,10 +56,10 @@ func (qs MongoQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model.
 	if quiz.Description != "" {
 		change["description"] = quiz.Description
 	}
-	err = qs.Session.DB("quiz_api").C("quizzes").UpdateId(id, change)
+	err = qs.Session.DB("quiz_api").C("quizzes").UpdateId(bson.ObjectIdHex(id), change)
 	if err != nil {
 		return existedQuiz, err
 	}
-	err = qs.Session.DB("quiz_api").C("quizzes").FindId(id).One(&existedQuiz)
+	err = qs.Session.DB("quiz_api").C("quizzes").FindId(bson.ObjectIdHex(id)).One(&existedQuiz)
 	return existedQuiz, err
 }

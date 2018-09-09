@@ -46,7 +46,7 @@ func (api *ApiWithGin) UpdateQuizHandler(context *gin.Context) {
 	}
 	newQuiz, err := api.Service.UpdateQuiz(id, quiz)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	context.JSON(http.StatusOK, newQuiz)
@@ -56,7 +56,7 @@ func (api ApiWithGin) GetQuizByIdHandler(context *gin.Context) {
 	id := context.Param("id")
 	newQuiz, err := api.Service.GetQuizByID(id)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	context.JSON(http.StatusOK, newQuiz)
