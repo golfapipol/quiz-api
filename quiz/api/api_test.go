@@ -129,3 +129,23 @@ func Test_GetQuizByIDHandler_Existed_ID_Should_Be_Quiz(t *testing.T) {
 		t.Errorf("Expected %v quiz but it got %v", expectedQuiz, updatedQuiz)
 	}
 }
+
+func Test_DeleteQuizByIDHandler_Existed_ID_Should_Be_Status_OK(t *testing.T) {
+	fixedTime, _ := time.Parse("2006-Jan-02", "2018-Jul-31")
+	id := bson.NewObjectIdWithTime(fixedTime)
+	expectedStatus := 200
+	request := httptest.NewRequest("GET", "/v1/quizzes/"+id.Hex(), nil)
+	request.Header.Set("Content-Type", binding.MIMEJSON)
+	responseRecorder := httptest.NewRecorder()
+
+	api := ApiWithGin{
+		Service: &service.MockQuizService{},
+	}
+	route := router.SetupRoute(&api)
+	route.ServeHTTP(responseRecorder, request)
+	response := responseRecorder.Result()
+
+	if expectedStatus != response.StatusCode {
+		t.Errorf("Expected status code: %v but it got %v", expectedStatus, response.StatusCode)
+	}
+}

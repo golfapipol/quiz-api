@@ -37,3 +37,7 @@ func (mqs *MockQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model
 	}
 	return mqs.ExistedQuiz, nil
 }
+
+func (mqs MockQuizService) DeleteQuizByID(string) error {
+	return nil
+}

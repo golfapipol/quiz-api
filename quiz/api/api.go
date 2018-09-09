@@ -13,6 +13,7 @@ type Api interface {
 	CreateQuizHandler(context *gin.Context)
 	GetQuizByIdHandler(context *gin.Context)
 	UpdateQuizHandler(context *gin.Context)
+	DeleteQuizByIDHandler(context *gin.Context)
 }
 
 type ApiWithGin struct {
@@ -60,4 +61,14 @@ func (api ApiWithGin) GetQuizByIdHandler(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, newQuiz)
+}
+
+func (api ApiWithGin) DeleteQuizByIDHandler(context *gin.Context) {
+	id := context.Param("id")
+	err := api.Service.DeleteQuizByID(id)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{"status": "ok"})
 }

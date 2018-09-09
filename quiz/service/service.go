@@ -13,6 +13,7 @@ type QuizService interface {
 	GetQuizByID(string) (model.Quiz, error)
 	CreateQuiz(quiz model.QuizRequest) (model.Quiz, error)
 	UpdateQuiz(id string, quiz model.QuizRequest) (model.Quiz, error)
+	DeleteQuizByID(string) error
 }
 
 type MongoQuizService struct {
@@ -62,4 +63,8 @@ func (qs MongoQuizService) UpdateQuiz(id string, quiz model.QuizRequest) (model.
 	}
 	err = qs.Session.DB("quiz_api").C("quizzes").FindId(bson.ObjectIdHex(id)).One(&existedQuiz)
 	return existedQuiz, err
+}
+
+func (qs MongoQuizService) DeleteQuizByID(id string) error {
+	return qs.Session.DB("quiz_api").C("quizzes").Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 }
