@@ -34,6 +34,8 @@ func (qs MongoQuizService) GetQuizByID(id string) (model.Quiz, error) {
 func (qs MongoQuizService) CreateQuiz(quiz model.QuizRequest) (model.Quiz, error) {
 	var newQuiz = model.Quiz{}
 	newQuiz.ID = bson.NewObjectId()
+	newQuiz.Title = quiz.Title
+	newQuiz.Description = quiz.Description
 	err := qs.Session.DB("quiz_api").C("quizzes").Insert(&newQuiz)
 	return newQuiz, err
 }

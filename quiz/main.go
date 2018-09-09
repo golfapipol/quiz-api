@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	apiLibrary "quiz/api"
+	"quiz/config"
 	"quiz/router"
 	"quiz/service"
 
@@ -12,8 +14,13 @@ import (
 const url = "mongodb://localhost:27017"
 
 func main() {
+	environment := "development"
+	if os.Getenv("ENV") != "" {
+		environment = os.Getenv("ENV")
+	}
+	configs := config.GetConfiguration(environment)
 
-	DBConnection, err := mgo.Dial(url)
+	DBConnection, err := mgo.Dial(configs["mongo"])
 	if err != nil {
 		fmt.Println("Cannot connect database ", err.Error())
 		return
