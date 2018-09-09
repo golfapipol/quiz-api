@@ -124,42 +124,6 @@
 			"response": []
 		},
 		{
-			"name": "delete existed quiz",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "d8bcc6a1-bea4-4022-afd0-cc681387f8e4",
-						"type": "text/javascript",
-						"exec": [
-							"",
-							"pm.test(\"quiz should be \", function () {",
-							"    var data = pm.response.json();",
-							"    pm.expect(data.status).to.eql(\"ok\");",
-							"});"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {},
-				"url": {
-					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
-					"host": [
-						"{{HOST}}"
-					],
-					"path": [
-						"v1",
-						"quizzes",
-						"{{quiz_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "update quiz",
 			"event": [
 				{
@@ -192,6 +156,46 @@
 					"mode": "raw",
 					"raw": "{\n\t\"title\": \"DISC\",\n\t\"description\": \"Which one is your DISC?\"\n}"
 				},
+				"url": {
+					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"v1",
+						"quizzes",
+						"{{quiz_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete existed quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a78e877b-9849-4a42-ad4d-27599012e1b4",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"pm.test(\"quiz should be delete success\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.status).to.eql(\"ok\");",
+							"    ",
+							"});",
+							"",
+							"",
+							"pm.environment.unset(\"quiz_id\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
 				"url": {
 					"raw": "{{HOST}}/v1/quizzes/{{quiz_id}}",
 					"host": [
