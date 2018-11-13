@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	bson "gopkg.in/mgo.v2/bson"
+	bson "github.com/globalsign/mgo/bson"
 )
 
 func Test_GetQuizzes_Should_Be_20_Quizzes(t *testing.T) {

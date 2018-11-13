@@ -13,17 +13,17 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin/binding"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 func Test_GetAllQuizHandler_Should_Be_20_Quiz(t *testing.T) {
 	request := httptest.NewRequest("GET", "/v1/quizzes", nil)
 	responseRecorder := httptest.NewRecorder()
 	expectedQuizzes := 20
-	api := ApiWithGin{
+	api := QuizAPI{
 		Service: &service.MockQuizService{},
 	}
-	route := router.SetupRoute(&api)
+	route := router.SetupRoute(api)
 	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
@@ -48,10 +48,10 @@ func Test_CreateQuizHandler_Title_DISC_Description_Which_one_is_your_Should_Be_N
 	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := ApiWithGin{
+	api := QuizAPI{
 		Service: &service.MockQuizService{},
 	}
-	route := router.SetupRoute(&api)
+	route := router.SetupRoute(api)
 	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
@@ -84,12 +84,12 @@ func Test_UpdateQuizHandler_New_Description_DISC_is_type_of_people_Should_Be_Upd
 	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := ApiWithGin{
+	api := QuizAPI{
 		Service: &service.MockQuizService{
 			ExistedQuiz: oldQuiz,
 		},
 	}
-	route := router.SetupRoute(&api)
+	route := router.SetupRoute(api)
 	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
@@ -113,12 +113,12 @@ func Test_GetQuizByIDHandler_Existed_ID_Should_Be_Quiz(t *testing.T) {
 	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := ApiWithGin{
+	api := QuizAPI{
 		Service: &service.MockQuizService{
 			ExistedQuiz: expectedQuiz,
 		},
 	}
-	route := router.SetupRoute(&api)
+	route := router.SetupRoute(api)
 	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 	body, _ := ioutil.ReadAll(response.Body)
@@ -138,10 +138,10 @@ func Test_DeleteQuizByIDHandler_Existed_ID_Should_Be_Status_OK(t *testing.T) {
 	request.Header.Set("Content-Type", binding.MIMEJSON)
 	responseRecorder := httptest.NewRecorder()
 
-	api := ApiWithGin{
+	api := QuizAPI{
 		Service: &service.MockQuizService{},
 	}
-	route := router.SetupRoute(&api)
+	route := router.SetupRoute(api)
 	route.ServeHTTP(responseRecorder, request)
 	response := responseRecorder.Result()
 

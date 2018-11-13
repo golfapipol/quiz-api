@@ -1,17 +1,17 @@
 package router
 
 import (
-	apiLibrary "quiz/api"
+	"quiz/api"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoute(api apiLibrary.Api) *gin.Engine {
+func SetupRoute(quizAPI api.QuizAPI) *gin.Engine {
 	router := gin.Default()
-	router.GET("/v1/quizzes", api.GetAllQuizHandler)
-	router.POST("/v1/quizzes", api.CreateQuizHandler)
-	router.GET("/v1/quizzes/:id", api.GetQuizByIdHandler)
-	router.PUT("/v1/quizzes/:id", api.UpdateQuizHandler)
-	router.DELETE("/v1/quizzes/:id", api.DeleteQuizByIDHandler)
+	router.GET("/v1/quizzes", quizAPI.GetAllQuizHandler)
+	router.POST("/v1/quizzes", quizAPI.CreateQuizHandler)
+	router.GET("/v1/quizzes/:id", quizAPI.GetQuizByIdHandler)
+	router.PUT("/v1/quizzes/:id", quizAPI.UpdateQuizHandler)
+	router.DELETE("/v1/quizzes/:id", quizAPI.DeleteQuizByIDHandler)
 	return router
 }

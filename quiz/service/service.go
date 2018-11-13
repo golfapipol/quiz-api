@@ -4,8 +4,8 @@ import (
 	"errors"
 	"quiz/model"
 
-	mgo "gopkg.in/mgo.v2"
-	bson "gopkg.in/mgo.v2/bson"
+	mgo "github.com/globalsign/mgo"
+	bson "github.com/globalsign/mgo/bson"
 )
 
 type QuizService interface {
