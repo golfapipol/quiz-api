@@ -1,6 +1,6 @@
 package model
 
-import "gopkg.in/mgo.v2/bson"
+import "github.com/globalsign/mgo/bson"
 
 type QuizRequest struct {
 	Title       string `json:"title" bson:"title"`

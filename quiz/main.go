@@ -2,33 +2,24 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	apiLibrary "quiz/api"
-	"quiz/config"
+	"quiz/api"
 	"quiz/router"
 	"quiz/service"
 
-	mgo "gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
-const url = "mongodb://localhost:27017"
-
 func main() {
-	environment := "development"
-	if os.Getenv("ENV") != "" {
-		environment = os.Getenv("ENV")
-	}
-	configs := config.GetConfiguration(environment)
-
-	DBConnection, err := mgo.Dial(configs["mongo"])
+	DBConnection, err := mgo.Dial(os.Getenv("MONGO_URL"))
 	if err != nil {
-		fmt.Println("Cannot connect database ", err.Error())
-		return
+		log.Fatal("Cannot connect database ", err.Error())
 	}
 	quizService := service.MongoQuizService{Session: DBConnection}
-	api := apiLibrary.ApiWithGin{Service: quizService}
+	quizAPI := api.QuizAPI{Service: quizService}
 
-	server := router.SetupRoute(&api)
+	server := router.SetupRoute(quizAPI)
 	server.Run(":3000")
 	fmt.Println("Quiz Api is Listening")
 }
