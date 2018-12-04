@@ -10,8 +10,3 @@ steps:
   image: golang
   commands:
   - go test ./...
-  when:
-    branch:
-    - deploy
-    event:
-    - push
