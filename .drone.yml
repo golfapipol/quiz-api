@@ -1,13 +1,8 @@
 kind: pipeline
 name: default
 
-# workspace:
-#   base: /go
-#   path: src/quiz-api
-
 steps:
 - name: build
   image: golang:1.11
   commands:
-  - cd quiz
   - go test ./...
