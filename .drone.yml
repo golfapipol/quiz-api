@@ -3,5 +3,5 @@ name: default
 
 steps:
 - name: build
-  image: plugin/docker
+  image: plugins/docker
   target: production
