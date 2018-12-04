@@ -11,6 +11,7 @@ steps:
   commands:
   - go test ./...
   when:
+    branch:
+    - deploy
     event:
     - push
- 
