@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"quiz/model"
+	"quiz/internal/model"
 
 	mgo "github.com/globalsign/mgo"
 	bson "github.com/globalsign/mgo/bson"

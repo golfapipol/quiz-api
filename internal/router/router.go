@@ -1,7 +1,7 @@
 package router
 
 import (
-	"quiz/api"
+	"quiz/internal/api"
 
 	"github.com/gin-gonic/gin"
 )

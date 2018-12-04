@@ -2,8 +2,8 @@ package api
 
 import (
 	"net/http"
-	"quiz/model"
-	"quiz/service"
+	"quiz/internal/model"
+	"quiz/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

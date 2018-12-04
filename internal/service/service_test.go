@@ -1,8 +1,8 @@
 package service_test
 
 import (
-	. "quiz/model"
-	. "quiz/service"
+	. "quiz/internal/model"
+	. "quiz/internal/service"
 	"testing"
 	"time"
 

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"quiz/model"
+	"quiz/internal/model"
 	"time"
 
 	"github.com/globalsign/mgo/bson"

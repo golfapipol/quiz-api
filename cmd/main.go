@@ -1,12 +1,12 @@
 package main
 
 import (
+	"quiz/internal/service"
+	"quiz/internal/api"
+	"quiz/internal/router"
 	"fmt"
 	"log"
 	"os"
-	"quiz/api"
-	"quiz/router"
-	"quiz/service"
 
 	"github.com/globalsign/mgo"
 )
