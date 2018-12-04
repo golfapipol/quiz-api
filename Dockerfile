@@ -1,7 +1,7 @@
 FROM golang:1.11 as builder
 WORKDIR /module
-COPY ./quiz/ /module
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/app
+COPY . /module
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/app cmd/main.go
 
 FROM alpine as production
 WORKDIR /root/
