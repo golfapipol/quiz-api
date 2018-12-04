@@ -9,6 +9,7 @@ steps:
 - name: build
   image: plugins/docker
   settings:
+    pull: false
     target: production
     repo: quiz-api
     tags:
