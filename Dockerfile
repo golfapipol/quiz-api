@@ -3,7 +3,7 @@ WORKDIR /module
 COPY ./quiz/ /module
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/app
 
-FROM alpine
+FROM alpine as production
 WORKDIR /root/
 COPY --from=builder /module/bin .
 EXPOSE 3000

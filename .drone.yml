@@ -3,6 +3,5 @@ name: default
 
 steps:
 - name: build
-  image: golang:1.11
-  commands:
-  - go test ./...
+  image: plugin/docker
+  target: production
