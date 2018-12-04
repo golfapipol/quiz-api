@@ -2,6 +2,15 @@ kind: pipeline
 name: default
 
 steps:
+- name: test
+  image: golang:1.11
+  commands:
+    - "go test ./..."
 - name: build
   image: plugins/docker
-  target: production
+  settings:
+    target: production
+    repo: quiz-api
+    tags:
+      - latest
+ 
