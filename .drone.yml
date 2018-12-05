@@ -6,7 +6,21 @@ name: default
 #   path: 
 
 steps:
-- name: build
-  image: golang
+- name: test
+  image: golang:1.11
   commands:
-  - go test ./...
+    - "go test ./..."
+- name: build
+  image: plugins/docker
+  settings:
+    repo: quiz-api
+    tags:
+    - latest
+  volumes:
+  - name: docker-sock
+    path: /var/run/docker.sock
+
+volumes:
+- name: docker-sock
+  host:
+    path: /var/run/docker.sock
