@@ -10,8 +10,8 @@ steps:
 - name: build
   image: plugins/docker
   volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+  - /var/run/docker.sock:/var/run/docker.sock
   settings:
     repo: quiz-api
     tags:
-      - latest
+    - latest
