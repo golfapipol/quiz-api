@@ -8,9 +8,9 @@ steps:
     - "go test ./..."
 - name: build
   image: plugins/docker
+  volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   settings:
-    pull: false
-    target: production
     repo: quiz-api
     tags:
       - latest
