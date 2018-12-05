@@ -9,8 +9,6 @@ steps:
 #     - "CGO_ENABLED=0 GOOS=linux go build -o ./bin/app cmd/main.go"
 - name: build
   image: plugins/docker
-  volumes:
-  - /var/run/docker.sock:/var/run/docker.sock
   settings:
     repo: quiz-api
     tags:
