@@ -16,6 +16,7 @@ steps:
     repo: quiz-api
     tags:
     - latest
+  privileged: true
   volumes:
   - name: docker-sock
     path: /var/run/docker.sock
